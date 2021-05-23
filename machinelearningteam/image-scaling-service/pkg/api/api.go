@@ -19,8 +19,7 @@ const (
 
 // ScaleImage echoes the image provides in the request
 func (s *Server) ScaleImage(ctx context.Context, req *api.ScaleImageRequest) (*api.ScaleImageReply, error) {
-	// Echo
-	fmt.Println("Recieved image...")
+	fmt.Println("Received image...")
 
 	conn, err := grpc.Dial(host, grpc.WithInsecure())
 	if err != nil {
@@ -32,8 +31,12 @@ func (s *Server) ScaleImage(ctx context.Context, req *api.ScaleImageRequest) (*a
 	image := req.Image.GetContent()
 
 	resp, err := client.OptimizeImage(ctx, &image_svc.OptimizeImageRequest{
-		Image:     image,
-		Scale:     true,
+		Image: image,
+		Scale: &image_svc.SizingOptions{
+			Scale:        true,
+			TargetWidth:  500,
+			TargetHeight: 600,
+		},
 		Greyscale: true,
 	})
 

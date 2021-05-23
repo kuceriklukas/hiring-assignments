@@ -10,9 +10,15 @@ service ImageOptimizer {
 
 message OptimizeImageRequest {
     bytes image = 1;
-    bool scale = 2;
+    SizingOptions scale = 2;
     bool greyscale = 3;
 }
+
+message SizingOptions {
+    bool scale = 1;
+    int32 targetWidth = 2;
+    int32 targetHeight = 3;
+  }
 
 message OptimizeImageReply {
     bytes content = 1;
