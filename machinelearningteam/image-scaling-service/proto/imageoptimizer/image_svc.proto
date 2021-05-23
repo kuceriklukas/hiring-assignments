@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+package imageoptimizer;
+
+option go_package = "imageoptimizer/";
+
+service ImageOptimizer {
+    rpc OptimizeImage (OptimizeImageRequest) returns (OptimizeImageReply) {}
+}
+
+message OptimizeImageRequest {
+    bytes image = 1;
+    bool scale = 2;
+    bool greyscale = 3;
+}
+
+message OptimizeImageReply {
+    bytes content = 1;
+}

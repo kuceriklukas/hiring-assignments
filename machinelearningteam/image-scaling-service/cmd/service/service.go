@@ -1,16 +1,17 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"net"
 	"net/http"
 
-	"github.com/e-conomic/hiring-assigments/machinelearningteam/image-scaling-service/pkg/api"
-	pb "github.com/e-conomic/hiring-assigments/machinelearningteam/image-scaling-service/proto"
+	"github.com/kuceriklukas/hiring-assigments/machinelearningteam/image-scaling-service/pkg/api"
+	pb "github.com/kuceriklukas/hiring-assigments/machinelearningteam/image-scaling-service/proto"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"google.golang.org/grpc"
 
-	health "github.com/e-conomic/hiring-assigments/machinelearningteam/image-scaling-service/pkg/health/v1"
+	health "github.com/kuceriklukas/hiring-assigments/machinelearningteam/image-scaling-service/pkg/health/v1"
 	api_health "google.golang.org/grpc/health/grpc_health_v1"
 )
 
@@ -27,6 +28,7 @@ func startPromHTTPServer(port string) {
 }
 
 func main() {
+	fmt.Println(fmt.Sprintf("starting the server on the port %s", port))
 	lis, err := net.Listen("tcp", port)
 	if err != nil {
 		log.Fatalf("failed to listen: %v", err)

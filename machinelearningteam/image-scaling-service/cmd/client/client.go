@@ -2,10 +2,11 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"io/ioutil"
 	"log"
 
-	pb "github.com/e-conomic/hiring-assigments/machinelearningteam/image-scaling-service/proto"
+	pb "github.com/kuceriklukas/hiring-assigments/machinelearningteam/image-scaling-service/proto"
 	"google.golang.org/grpc"
 )
 
@@ -14,6 +15,7 @@ const (
 )
 
 func main() {
+	fmt.Printf("starting the client and connecting to server at %s\n", host)
 	conn, err := grpc.Dial(host, grpc.WithInsecure())
 	if err != nil {
 		log.Fatalf("did not connect: %v", err)
@@ -31,6 +33,10 @@ func main() {
 			Content: image,
 		},
 	})
+
+	if err != nil {
+		fmt.Println("Error getting file")
+	}
 
 	ioutil.WriteFile("out.jpg", resp.GetContent(), 0644)
 }
