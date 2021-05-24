@@ -1,0 +1,40 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: imageoptimizer
+  labels:
+    app: imageoptimizer
+spec:
+  ports:
+    - name: grpc
+      port: 50052
+      targetPort: 50052
+  selector:
+    app: imageoptimizer
+  type: LoadBalancer
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: imageoptimizer
+  labels:
+    app: imageoptimizer
+spec:
+  selector:
+    matchLabels:
+      app: imageoptimizer
+  replicas: 2
+  template:
+    metadata:
+      labels:
+        app: imageoptimizer
+    spec:
+      terminationGracePeriodSeconds: 60
+      containers:
+        - name: imageoptimizer
+          image: kcrk/image-optimizer-go:latest
+          command: ["/app/image_svc"]
+          args: []
+          ports:
+            - containerPort: 50052
