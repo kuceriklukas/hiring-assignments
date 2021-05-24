@@ -27,7 +27,7 @@ const (
 	scalingMargin = 5
 )
 
-// ScaleImage echoes the image provides in the request
+// ScaleImage calculates whether the image needs to be scaled or not and forwards this to image_svc and then returns the resulting image
 func (s *Server) ScaleImage(ctx context.Context, req *api.ScaleImageRequest) (*api.ScaleImageReply, error) {
 	fmt.Println("Received an image")
 
@@ -118,15 +118,18 @@ func calculateScalingOptions(image image.Image, targetWidth int, targetHeight in
 }
 
 func downloadImageFromUri(uri string) ([]byte, error) {
+	// fetch the image from the given url
 	resp, err := http.Get(uri)
 	if err != nil {
 		return nil, err
 	}
 
+	// check if the request to fetch the image was successful
 	if resp.StatusCode != 200 {
 		return nil, fmt.Errorf("couldn't download image, received status code %d", resp.StatusCode)
 	}
 
+	// read the response's body into a byte array
 	defer resp.Body.Close()
 	imageBytes, err := ioutil.ReadAll(resp.Body)
 	if err != nil {

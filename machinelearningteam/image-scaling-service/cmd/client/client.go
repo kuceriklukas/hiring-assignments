@@ -18,10 +18,12 @@ const (
 func main() {
 	fmt.Printf("starting the client and connecting to server at %s\n", host)
 
+	// read and parse the config flags from when the app was run
 	var url string
 	flag.StringVar(&url, "url", "", "Provide the url for downloading the image from instead of using the defualt test.jpg")
 	flag.Parse()
 
+	// connect to the GRPC server
 	conn, err := grpc.Dial(host, grpc.WithInsecure())
 	if err != nil {
 		log.Fatalf("did not connect: %v", err)
@@ -32,6 +34,7 @@ func main() {
 	var resp *pb.ScaleImageReply
 	ctx := context.Background()
 
+	// if the url was specified, take that into the request for the api
 	if url != "" {
 		resp, err = client.ScaleImage(ctx, &pb.ScaleImageRequest{
 			Image: &pb.Image{
@@ -45,6 +48,7 @@ func main() {
 			log.Fatal("Couldn't fetch image based on given url")
 		}
 	} else {
+		// if the url wasn't specified, take the test file into the request for the api
 		image, err := ioutil.ReadFile("test.jpg")
 		if err != nil {
 			log.Fatal("Couldn't read input image")
@@ -61,5 +65,6 @@ func main() {
 		}
 	}
 
+	// write out the file
 	ioutil.WriteFile("out.jpg", resp.GetContent(), 0644)
 }

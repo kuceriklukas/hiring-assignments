@@ -30,6 +30,8 @@ func startPromHTTPServer(port string) {
 
 func main() {
 	fmt.Printf("starting the server on the port %s\n", port)
+
+	// read and parse the flags from when the app was started
 	var imageTargetWidth int
 	var imageTargetHeight int
 	var doGreyscale bool
