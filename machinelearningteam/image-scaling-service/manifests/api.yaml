@@ -41,18 +41,19 @@ spec:
           args: []
           ports:
             - containerPort: 50051
-          resources:
-            requests:
-              memory: 256Mi
-              cpu: 500m
-            limits:
-              memory: 768Mi
-              cpu: 2500m
-          readinessProbe:
-            exec:
-              command:
-                ["/bin/grpc-health-probe", "-addr=:50051"]
-          livenessProbe:
-            exec:
-              command:
-                ["/bin/grpc-health-probe", "-addr=:50051"]
+          # Unfortunately this part had to be commented out in order for my minikube environment to be able to create the pod... otherwise I was getting CrashLoopBackOff
+          # resources:
+          #   requests:
+          #     memory: 256Mi
+          #     cpu: 500m
+          #   limits:
+          #     memory: 768Mi
+          #     cpu: 2500m
+          # readinessProbe:
+          #   exec:
+          #     command:
+          #       ["/bin/grpc-health-probe", "-addr=:50051"]
+          # livenessProbe:
+          #   exec:
+          #     command:
+          #       ["/bin/grpc-health-probe", "-addr=:50051"]
