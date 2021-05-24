@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"image"
 	_ "image/jpeg"
-	"io"
+	"io/ioutil"
 	"log"
 	"net/http"
 
@@ -128,7 +128,7 @@ func downloadImageFromUri(uri string) ([]byte, error) {
 	}
 
 	defer resp.Body.Close()
-	imageBytes, err := io.ReadAll(resp.Body)
+	imageBytes, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
 		return nil, err
 	}
