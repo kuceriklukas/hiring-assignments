@@ -1,6 +1,7 @@
 package main
 
 import (
+	"flag"
 	"fmt"
 	"log"
 	"net"
@@ -28,7 +29,18 @@ func startPromHTTPServer(port string) {
 }
 
 func main() {
-	fmt.Println(fmt.Sprintf("starting the server on the port %s", port))
+	fmt.Printf("starting the server on the port %s\n", port)
+	var imageTargetWidth int
+	var imageTargetHeight int
+	var doGreyscale bool
+
+	flag.IntVar(&imageTargetWidth, "w", 1024, "The desired image width after scaling, default being 1024")
+	flag.IntVar(&imageTargetHeight, "h", 768, "The desired image height after scaling, default being 768")
+	flag.BoolVar(&doGreyscale, "gs", true, "Whether the api should greyscale the image as well or not, default being true")
+	flag.Parse()
+
+	fmt.Printf("starting the api with follwoing config: target width = %d, target height = %d, perform greyscaling = %t\n", imageTargetWidth, imageTargetHeight, doGreyscale)
+
 	lis, err := net.Listen("tcp", port)
 	if err != nil {
 		log.Fatalf("failed to listen: %v", err)
@@ -42,7 +54,13 @@ func main() {
 	healthServ := health.NewHealthCheckService()
 	api_health.RegisterHealthServer(s, healthServ)
 
-	pb.RegisterImageScalerServer(s, &api.Server{})
+	apiServer := &api.Server{
+		TargetWidth:  imageTargetWidth,
+		TargetHeight: imageTargetHeight,
+		DoGreyscale:  doGreyscale,
+	}
+
+	pb.RegisterImageScalerServer(s, apiServer)
 	if err := s.Serve(lis); err != nil {
 		log.Fatalf("failed to serve: %v", err)
 	}

@@ -11,7 +11,11 @@ import (
 )
 
 // Server is a server implementing the proto API
-type Server struct{}
+type Server struct {
+	TargetWidth  int
+	TargetHeight int
+	DoGreyscale  bool
+}
 
 const (
 	host = "localhost:50052"
@@ -34,10 +38,10 @@ func (s *Server) ScaleImage(ctx context.Context, req *api.ScaleImageRequest) (*a
 		Image: image,
 		Scale: &image_svc.SizingOptions{
 			Scale:        true,
-			TargetWidth:  500,
-			TargetHeight: 600,
+			TargetWidth:  int32(s.TargetWidth),
+			TargetHeight: int32(s.TargetHeight),
 		},
-		Greyscale: true,
+		Greyscale: s.DoGreyscale,
 	})
 
 	if err != nil {
