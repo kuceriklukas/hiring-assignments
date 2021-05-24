@@ -6,7 +6,9 @@ import (
 	"fmt"
 	"image"
 	_ "image/jpeg"
+	"io"
 	"log"
+	"net/http"
 
 	api "github.com/kuceriklukas/hiring-assigments/machinelearningteam/image-scaling-service/proto"
 	image_svc "github.com/kuceriklukas/hiring-assigments/machinelearningteam/image-scaling-service/proto/imageoptimizer"
@@ -37,8 +39,18 @@ func (s *Server) ScaleImage(ctx context.Context, req *api.ScaleImageRequest) (*a
 	defer conn.Close()
 	client := image_svc.NewImageOptimizerClient(conn)
 
-	// get the images bytes and create an image object
-	imageBytes := req.Image.GetContent()
+	// get the images bytes, either straight from the request or from the url
+	var imageBytes []byte
+	if req.Image.Source.GetHttpUri() != "" {
+		imageBytes, err = downloadImageFromUri(req.Image.Source.GetHttpUri())
+		if err != nil {
+			fmt.Printf("Error downloading file:%s", err.Error())
+		}
+	} else {
+		imageBytes = req.Image.GetContent()
+	}
+
+	// create the image object for later we need to extract some information from it
 	providedImage, _, err := image.Decode(bytes.NewReader(imageBytes))
 
 	if err != nil {
@@ -103,4 +115,23 @@ func calculateScalingOptions(image image.Image, targetWidth int, targetHeight in
 		TargetWidth:  int32(actualTargetWidth),
 		TargetHeight: int32(actualTargetHeight),
 	}
+}
+
+func downloadImageFromUri(uri string) ([]byte, error) {
+	resp, err := http.Get(uri)
+	if err != nil {
+		return nil, err
+	}
+
+	if resp.StatusCode != 200 {
+		return nil, fmt.Errorf("couldn't download image, received status code %d", resp.StatusCode)
+	}
+
+	defer resp.Body.Close()
+	imageBytes, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return nil, err
+	}
+
+	return imageBytes, nil
 }
