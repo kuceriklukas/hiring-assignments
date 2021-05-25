@@ -3,6 +3,10 @@ You can run the applications locally by doing the same as described in the assig
 
 ```go run cmd/image_svc/image_svc.go```
 
+When you run the client.go, you can provide a url of the image instead of the default test.jpeg image. You can do this by providing a --url flag to the client, for example:
+
+```go run .\cmd\client\client.go --url=https://place-puppy.com/800x650```
+
 ### Docker images:
 
 The docker images should be available in Dockerhub:
