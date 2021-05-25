@@ -1,4 +1,37 @@
-# Assignment used for Software Engineer position
+# How to run
+You can run the applications locally by doing the same as described in the assignment. However, before running the service and the client, you first need to run the image service:
+
+```go run cmd/image_svc/image_svc.go```
+
+### Docker images:
+
+The docker images should be available in Dockerhub:
+
+```
+docker pull kcrk/image-scaler-go:latest
+docker pull kcrk/image-optimizer-go:latest
+```
+
+### Running the services in the cluster
+This assignment was tested with the minikube cluster. So, in order to run the services, you can:
+
+```minikube start```
+
+Then, cd into the /manifests directory and create the pods from the yaml files:
+
+``` 
+kubectl create -f .\api.yaml
+kubectl create -f .\image_svc.yaml 
+```
+
+For being able to access the api on the cluster, I ran:
+
+``` minikube service imagescaler --url ```
+
+... which should give you a port. This port can be given to the client in the cmd/client/client.go and the client can be run from the terminal.
+
+
+# Original assignment: assignment used for Software Engineer position
 This task is intended for candidates applying for a Software Engineer position at the Visma Machine Learning team. The assignment is built around the technologies and stack used in the production environments of the team, and the problem is a toy version of some of the tasks we face.
 
 
